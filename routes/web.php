@@ -16,7 +16,7 @@ Route::get('/dashboard', function () {
 // Secret Login admin (mengganti login default)
 Route::get('/auth-secret', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
-    ->name('login'); // tetap name login agar breeze tetap jalan tapi halaman kita
+    ->name('login'); 
 
 Route::post('/auth-secret', [AuthenticatedSessionController::class, 'store'])
     ->middleware('guest');
