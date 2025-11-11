@@ -1,27 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\MenuController;
 
-// Landing Page
-Route::get('/', function () {
-    return view('landing');
-});
-
-// Dashboard hanya untuk admin login
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth'])->name('dashboard');
-
-// Secret Login admin (mengganti login default)
-Route::get('/auth-secret', [AuthenticatedSessionController::class, 'create'])
-    ->middleware('guest')
-    ->name('login'); 
-
-Route::post('/auth-secret', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('guest');
-
-// Logout
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
+// Rute utama sekarang langsung memanggil MenuController.
+// Ini lebih efisien karena tidak memerlukan pengalihan.
+Route::get('/', [MenuController::class, 'index'])->name('menu');
+// Jika Anda masih ingin URL /menu dapat diakses, Anda bisa menambahkan rute ini.
+// Route::get('/menu', [MenuController::class, 'index']);
