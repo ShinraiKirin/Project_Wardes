@@ -71,7 +71,77 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item added to cart successfully!');
     }
 
-    // You might want to add update and remove methods later
-    // public function update(Request $request, $id) { ... }
-    // public function remove($id) { ... }
+    /**
+     * Update the quantity of an item in the shopping cart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = Session::get('cart');
+
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] = $request->quantity;
+            Session::put('cart', $cart);
+
+            $subtotal = $cart[$id]['price'] * $cart[$id]['quantity'];
+            $total = $this->calculateTotal($cart);
+
+            return response()->json([
+                'message' => 'Cart updated successfully',
+                'cartCount' => count($cart),
+                'subtotal' => 'Rp' . number_format($subtotal, 0, ',', '.'),
+                'total' => 'Rp' . number_format($total, 0, ',', '.'),
+            ]);
+        }
+
+        return response()->json(['message' => 'Item not found in cart'], 404);
+    }
+
+    /**
+     * Remove an item from the shopping cart.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function remove($id)
+    {
+        $cart = Session::get('cart');
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            Session::put('cart', $cart);
+
+            $total = $this->calculateTotal($cart);
+
+            return response()->json([
+                'message' => 'Item removed successfully',
+                'cartCount' => count($cart),
+                'total' => 'Rp' . number_format($total, 0, ',', '.'),
+            ]);
+        }
+
+        return response()->json(['message' => 'Item not found in cart'], 404);
+    }
+
+    /**
+     * Calculate the total price of the cart.
+     *
+     * @param  array  $cart
+     * @return float
+     */
+    private function calculateTotal(array $cart): float
+    {
+        $total = 0;
+        foreach ($cart as $details) {
+            $total += $details['price'] * $details['quantity'];
+        }
+        return $total;
+    }
 }
