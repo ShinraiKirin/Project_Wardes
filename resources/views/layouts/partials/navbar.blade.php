@@ -15,9 +15,11 @@
                     <a class="nav-link {{ request()->routeIs('kontak.index') ? 'active' : '' }}" href="{{ route('kontak.index') }}">Kontak</a>
                 </li>
                 <li class="nav-item ms-lg-3">
-                    <a class="btn btn-outline-warning" href="#">
+                    <a class="btn btn-outline-warning position-relative" href="{{ route('cart.index') }}">
                         <i class="fas fa-shopping-cart me-1"></i> Cart
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        <span id="cart-count" class="badge bg-dark text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">
+                            {{ session('cart') ? count(session('cart')) : 0 }}
+                        </span>
                     </a>
                 </li>
             </ul>

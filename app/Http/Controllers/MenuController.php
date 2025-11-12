@@ -17,6 +17,6 @@ class MenuController extends Controller
         $items = Item::with('category')->latest()->get();
 
         // Mengirim data items ke view
-        return view('menu.index', compact('items'));
+        return view('customer.menu.index', compact('items'));
     }
 }
